@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign Up</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-tr from-indigo-100 via-purple-100 to-pink-100 flex items-center justify-center min-h-screen px-4">
+
+  <div id="signupContainer" class="bg-white shadow-2xl rounded-3xl p-10 w-full max-w-md border border-gray-200 flex flex-col items-center transition-shadow duration-300 hover:shadow-indigo-400/40">
+    <h2 class="text-4xl font-extrabold text-gray-900 mb-2 text-center drop-shadow-sm">Sign Up</h2>
+    <p class="text-gray-600 text-center mb-8 max-w-xs">Create your account with mobile OTP verification.</p>
+    
+    <form id="signupForm" class="w-full space-y-6" novalidate>
+      <div>
+        <label for="username" class="block text-sm font-semibold text-gray-700 mb-1">User Name</label>
+        <input type="text" id="username" name="username" required placeholder="Your name"
+               class="w-full px-5 py-3 rounded-xl border border-gray-300 shadow-sm bg-gray-50 placeholder-gray-400
+                      focus:outline-none focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 transition-all duration-300 text-gray-900"/>
+      </div>
+      <div>
+        <label for="email" class="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+        <input type="email" id="email" name="email" required placeholder="you@example.com"
+               class="w-full px-5 py-3 rounded-xl border border-gray-300 shadow-sm bg-gray-50 placeholder-gray-400
+                      focus:outline-none focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 transition-all duration-300 text-gray-900"/>
+      </div>
+      <div>
+        <label for="phone" class="block text-sm font-semibold text-gray-700 mb-1">Phone Number</label>
+        <input type="tel" id="phone" name="phone" pattern="^\+?\d{10,15}$" required placeholder="+1234567890"
+               class="w-full px-5 py-3 rounded-xl border border-gray-300 shadow-sm bg-gray-50 placeholder-gray-400
+                      focus:outline-none focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 transition-all duration-300 text-gray-900"/>
+        <p id="phoneHelp" class="text-xs text-gray-500 mt-1">Include country code. E.g., +1234567890</p>
+      </div>
+      <div>
+        <label for="password" class="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+        <input type="password" id="password" name="password" required placeholder="••••••••"
+               class="w-full px-5 py-3 rounded-xl border border-gray-300 shadow-sm bg-gray-50 placeholder-gray-400
+                      focus:outline-none focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 transition-all duration-300 text-gray-900"/>
+      </div>
+      <button type="submit" id="sendOtpBtn"
+              class="w-full py-3 bg-indigo-600 rounded-xl text-white font-semibold text-lg shadow-md
+                     hover:bg-indigo-700 hover:shadow-lg transition duration-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-400">
+        Send OTP
+      </button>
+      <!-- For errors -->
+      <div id="signupError" class="text-sm text-red-600 mt-2 text-center hidden"></div>
+    </form>
+
+    <!-- OTP Verification Section (hidden initially) -->
+    <div id="otpSection" class="hidden w-full mt-8">
+      <p class="text-center text-gray-600 mb-4 font-semibold">Enter the OTP sent to your phone</p>
+      <form id="otpForm" class="flex justify-center gap-2">
+        <input type="text" inputmode="numeric" maxlength="1" pattern="\d" required class="otp-input w-12 h-12 text-center border-2 border-gray-300 rounded-lg text-xl font-semibold focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 transition" />
+        <input type="text" inputmode="numeric" maxlength="1" pattern="\d" required class="otp-input w-12 h-12 text-center border-2 border-gray-300 rounded-lg text-xl font-semibold focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 transition" />
+        <input type="text" inputmode="numeric" maxlength="1" pattern="\d" required class="otp-input w-12 h-12 text-center border-2 border-gray-300 rounded-lg text-xl font-semibold focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 transition" />
+        <input type="text" inputmode="numeric" maxlength="1" pattern="\d" required class="otp-input w-12 h-12 text-center border-2 border-gray-300 rounded-lg text-xl font-semibold focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 transition" />
+        <input type="text" inputmode="numeric" maxlength="1" pattern="\d" required class="otp-input w-12 h-12 text-center border-2 border-gray-300 rounded-lg text-xl font-semibold focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 transition" />
+        <input type="text" inputmode="numeric" maxlength="1" pattern="\d" required class="otp-input w-12 h-12 text-center border-2 border-gray-300 rounded-lg text-xl font-semibold focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 transition" />
+      </form>
+      <p id="otpError" class="text-red-600 text-sm mt-3 hidden text-center"></p>
+      <div class="mt-6 flex justify-center gap-4">
+        <button id="verifyOtpBtn" class="px-6 py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition focus:outline-none focus:ring-4 focus:ring-green-400">Verify OTP</button>
+        <button id="resendOtpBtn" class="px-6 py-3 bg-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-400 transition focus:outline-none focus:ring-4 focus:ring-gray-400" disabled>Resend OTP (30s)</button>
+      </div>
+    </div>
+
+    <p class="text-center text-gray-600 text-sm mt-10 font-semibold">
+      Already have an account?
+      <a href="index.html" class="text-indigo-600 hover:underline focus:outline-none focus:ring-2 focus:ring-indigo-400 rounded">Login</a>
+    </p>
+  </div>
+
+  <script>
+    // user localStorage helpers
+    function getUsers() {
+      return JSON.parse(localStorage.getItem('users') || '[]');
+    }
+    function setUsers(newUsers) {
+      localStorage.setItem('users', JSON.stringify(newUsers));
+    }
+    function userExists(email, phone) {
+      const users = getUsers();
+      return users.find(u =>
+        u.email.toLowerCase() === email.toLowerCase() ||
+        u.phone === phone
+      );
+    }
+
+    // DOM references
+    const signupForm = document.getElementById('signupForm');
+    const signupError = document.getElementById('signupError');
+    const otpSection = document.getElementById('otpSection');
+    const otpInputs = document.querySelectorAll('.otp-input');
+    const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+    const resendOtpBtn = document.getElementById('resendOtpBtn');
+    const otpError = document.getElementById('otpError');
+    const sendOtpBtn = document.getElementById('sendOtpBtn');
+
+    let generatedOtp = null;
+    let resendTimer = null;
+    let resendCountdown = 30;
+
+    // Helper to simulate OTP send
+    function sendOtp() {
+      generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      console.log('Simulated OTP (send to user phone):', generatedOtp);
+      alert(`OTP sent to your phone (Simulated): ${generatedOtp}`);
+    }
+
+    // Signup form -- check for duplicate & go to OTP
+    signupForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      signupError.classList.add('hidden');
+      otpError.classList.add('hidden');
+      const username = signupForm.username.value.trim();
+      const phone = signupForm.phone.value.trim();
+      const email = signupForm.email.value.trim();
+      const password = signupForm.password.value.trim();
+
+      // Basic validation
+      if (!username || !email || !phone || !password) {
+        signupError.textContent = 'Please fill in all fields.';
+        signupError.classList.remove('hidden');
+        return;
+      }
+      // Match phone pattern
+      const phoneRegex = /^\+?\d{10,15}$/;
+      if (!phoneRegex.test(phone)) {
+        signupError.textContent = 'Please enter a valid phone number including country code.';
+        signupError.classList.remove('hidden');
+        return;
+      }
+      // Already registered check
+      if (userExists(email, phone)) {
+        signupError.textContent = 'Email or phone already registered. Please log in or use different details.';
+        signupError.classList.remove('hidden');
+        return;
+      }
+
+      // Show OTP section, hide signup
+      sendOtp();
+      otpSection.classList.remove('hidden');
+      signupForm.querySelectorAll('input, button').forEach(el => el.disabled = true);
+      sendOtpBtn.disabled = true;
+      otpInputs[0].focus();
+      startResendTimer();
+    });
+
+    // OTP input auto focus and restrict input
+    otpInputs.forEach((input, idx) => {
+      input.addEventListener('input', (e) => {
+        input.value = input.value.replace(/[^0-9]/g, '');
+        if (input.value.length === 1 && idx < otpInputs.length - 1) {
+          otpInputs[idx + 1].focus();
+        }
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !input.value && idx > 0) {
+          otpInputs[idx - 1].focus();
+        }
+      });
+    });
+
+    // OTP verify
+    verifyOtpBtn.addEventListener('click', () => {
+      otpError.classList.add('hidden');
+      const userOtp = Array.from(otpInputs).map(input => input.value).join('');
+      if (userOtp.length !== 6) {
+        otpError.textContent = 'Please enter the 6-digit OTP.';
+        otpError.classList.remove('hidden');
+        return;
+      }
+      if (userOtp === generatedOtp) {
+        // Store user safely
+        const username = signupForm.username.value.trim();
+        const phone = signupForm.phone.value.trim();
+        const email = signupForm.email.value.trim();
+        const password = signupForm.password.value.trim();
+        // In production, never store password in plain text!
+        const userObj = {
+          username, email, phone, password
+        };
+        const users = getUsers();
+        users.push(userObj);
+        setUsers(users);
+        localStorage.setItem('ai-username', username);
+        alert('OTP verified! Account created successfully.');
+        window.location.href = 'index.html'; // Or "dashboard.html"
+      } else {
+        otpError.textContent = 'Invalid OTP. Please try again.';
+        otpError.classList.remove('hidden');
+      }
+    });
+
+    // Resend OTP logic with countdown timer
+    function startResendTimer() {
+      resendCountdown = 30;
+      resendOtpBtn.disabled = true;
+      resendOtpBtn.textContent = `Resend OTP (${resendCountdown}s)`;
+      if (resendTimer) clearInterval(resendTimer);
+      resendTimer = setInterval(() => {
+        resendCountdown--;
+        resendOtpBtn.textContent = `Resend OTP (${resendCountdown}s)`;
+        if (resendCountdown <= 0) {
+          clearInterval(resendTimer);
+          resendOtpBtn.disabled = false;
+          resendOtpBtn.textContent = 'Resend OTP';
+        }
+      }, 1000);
+    }
+    resendOtpBtn.addEventListener('click', () => {
+      sendOtp();
+      otpInputs.forEach(input => (input.value = ''));
+      otpInputs[0].focus();
+      otpError.classList.add('hidden');
+      startResendTimer();
+    });
+  </script>
+
+  <style>
+    @media (max-width: 460px) {
+      #otpForm {
+        gap: 8px !important;
+      }
+      .otp-input {
+        width: 10vw !important;
+        height: 10vw !important;
+        min-width: 40px !important;
+        min-height: 40px !important;
+        font-size: 3vw !important;
+      }
+    }
+  </style>
+</body>
+</html>
